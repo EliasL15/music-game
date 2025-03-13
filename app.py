@@ -14,7 +14,7 @@ app.secret_key = os.urandom(24)  # Set a secret key for session management
 
 # Configure CORS for both API endpoints and Socket.IO
 CORS(app, resources={
-    r"/api/*": {"origins": ["http://127.0.0.1:8000", "http://localhost:8000", "https://music-game-production.up.railway.app"]},
+    r"/api/*": {"origins": "*"},  # Allow all origins for API endpoints
     r"/socket.io/*": {"origins": "*"}
 }, supports_credentials=True)
 
