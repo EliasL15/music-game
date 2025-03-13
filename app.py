@@ -415,4 +415,4 @@ def get_lobby(lobby_code):
     return jsonify(lobbies[lobby_code])
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, use_reloader=False, port=8000)
+    socketio.run(app, host='0.0.0.0', port=8000)
