@@ -14,11 +14,11 @@ app.secret_key = os.urandom(24)  # Set a secret key for session management
 
 # Configure CORS for both API endpoints and Socket.IO
 CORS(app, resources={
-    r"/api/*": {"origins": ["http://127.0.0.1:8000", "http://localhost:8000"]},
+    r"/api/*": {"origins": ["http://127.0.0.1:8000", "http://localhost:8000", "https://music-game-production.up.railway.app"]},
     r"/socket.io/*": {"origins": "*"}
 }, supports_credentials=True)
 
-socketio = SocketIO(app, cors_allowed_origins=["http://127.0.0.1:8000", "http://localhost:8000"], 
+socketio = SocketIO(app, cors_allowed_origins=["http://127.0.0.1:8000", "http://localhost:8000", "https://music-game-production.up.railway.app"], 
                    async_mode='eventlet')
 
 DEEZER_API_BASE_URL = 'https://api.deezer.com'
