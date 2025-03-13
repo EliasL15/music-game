@@ -21,4 +21,4 @@ COPY my-react-app/build ./my-react-app/build
 EXPOSE 8000
 
 # Start the application with Gunicorn
-CMD ["gunicorn", "--worker-class", "eventlet", "--workers", "1", "--bind", "0.0.0.0:8000", "app:app"]
+CMD ["gunicorn", "--worker-class", "eventlet", "--workers", "1", "--bind", "0.0.0.0:8000", "--log-level", "debug", "--access-logfile", "-", "--error-logfile", "-", "app:app"]
