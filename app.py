@@ -315,20 +315,35 @@ def on_leave(data):
 def get_random_song():
     try:
         position = random.randint(1, 100)
+        print(f"Attempting to fetch song from Deezer API at position {position}")
+        
         response = requests.get(
             f'{DEEZER_API_BASE_URL}/chart/0/tracks',
-            params={'limit': 1, 'index': position}
+            params={'limit': 1, 'index': position},
+            timeout=10  # Add timeout
         )
         response.raise_for_status()
+        print(f"Deezer API Response Status: {response.status_code}")
+        print(f"Deezer API Response: {response.text[:200]}...")  # Print first 200 chars of response
+        
         track_data = response.json()['data'][0]
-        return jsonify({
+        song_data = {
             'song': track_data['title'],
             'artist': track_data['artist']['name'],
             'audio_url': track_data['preview']
-        })
+        }
+        print(f"Successfully fetched song: {song_data['song']} by {song_data['artist']}")
+        return jsonify(song_data)
+        
     except requests.exceptions.RequestException as e:
-        print("Error fetching song:", e)
+        print(f"Network error fetching song: {str(e)}")
         return jsonify({'error': 'Failed to fetch song from Deezer API'}), 500
+    except (KeyError, IndexError, ValueError) as e:
+        print(f"Error parsing Deezer API response: {str(e)}")
+        return jsonify({'error': 'Invalid response from Deezer API'}), 500
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return jsonify({'error': 'An unexpected error occurred'}), 500
 
 # ------------------ Validate Guess ------------------
 @app.route('/api/validate-guess', methods=['POST'])
