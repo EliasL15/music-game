@@ -6,8 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Set a reliable DNS server (Google DNS) to help with DNS resolution issues.
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
+# Note: Do not modify /etc/resolv.conf here; configure DNS at runtime if necessary.
+# For example, when running the container locally, you can use:
+# docker run --dns=8.8.8.8 ...
 
 # Install Gunicorn and Eventlet directly
 RUN pip install --no-cache-dir gunicorn eventlet
