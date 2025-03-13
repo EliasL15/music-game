@@ -323,7 +323,7 @@ def get_random_song():
             timeout=10  # Add timeout
         )
         response.raise_for_status()
-        print(f"Deezer API Response Status: {response.status_code}")
+        print(f"Deezer API Response Status: {response.status_code}") 
         print(f"Deezer API Response: {response.text[:200]}...")  # Print first 200 chars of response
         
         track_data = response.json()['data'][0]
@@ -431,4 +431,4 @@ def get_lobby(lobby_code):
     return jsonify(lobbies[lobby_code])
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=8000)
+    socketio.run(app, host='0.0.0.0', port=8000, debug=True)
