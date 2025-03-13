@@ -18,7 +18,8 @@ CORS(app, resources={
     r"/socket.io/*": {"origins": "*"}
 }, supports_credentials=True)
 
-socketio = SocketIO(app, cors_allowed_origins=["http://127.0.0.1:8000", "http://localhost:8000", "https://music-game-production.up.railway.app"], 
+socketio = SocketIO(app, 
+                   cors_allowed_origins="*",  # Allow all origins for Socket.IO
                    async_mode='eventlet')
 
 DEEZER_API_BASE_URL = 'https://api.deezer.com'
