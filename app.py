@@ -7,7 +7,6 @@ import os
 import requests
 import random
 import string
-import socket
 
 app = Flask(__name__, static_folder="my-react-app/build", static_url_path="/")
 application = app
@@ -21,7 +20,7 @@ CORS(app, resources={
 
 socketio = SocketIO(app, 
                    cors_allowed_origins="*",  # Allow all origins for Socket.IO
-                   async_mode='eventlet')
+                   async_mode='gevent')
 
 DEEZER_API_BASE_URL = 'https://api.deezer.com'
 lobbies = {}
@@ -317,39 +316,24 @@ def get_random_song():
     try:
         position = random.randint(1, 100)
         print(f"Attempting to fetch song from Deezer API at position {position}")
-
-        # Manually resolve Deezer's IP to bypass DNS issues
-        try:
-            deezer_ip = socket.gethostbyname("api.deezer.com")
-            deezer_url = f"https://{deezer_ip}/chart/0/tracks"
-        except socket.gaierror:
-            print("Failed to resolve Deezer API domain")
-            return jsonify({"error": "DNS resolution failed"}), 500
-
+        
         response = requests.get(
-            deezer_url,
+            f'{DEEZER_API_BASE_URL}/chart/0/tracks',
             params={'limit': 1, 'index': position},
-            headers={"Host": "api.deezer.com"},  # Trick Deezer into accepting request
-            timeout=10
+            timeout=10  # Add timeout
         )
         response.raise_for_status()
-
         print(f"Deezer API Response Status: {response.status_code}") 
-        print(f"Deezer API Response: {response.text[:200]}...")  # Print first 200 chars
-
+        print(f"Deezer API Response: {response.text[:200]}...")  # Print first 200 chars of response
+        
         track_data = response.json()['data'][0]
         song_data = {
             'song': track_data['title'],
             'artist': track_data['artist']['name'],
             'audio_url': track_data['preview']
         }
-
         print(f"Successfully fetched song: {song_data['song']} by {song_data['artist']}")
         return jsonify(song_data)
-
-    except requests.RequestException as e:
-        print(f"Error fetching song from Deezer API: {e}")
-        return jsonify({"error": "Failed to fetch song"}), 500
         
     except requests.exceptions.RequestException as e:
         print(f"Network error fetching song: {str(e)}")
